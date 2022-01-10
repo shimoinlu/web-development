@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+<style>
+  input:invalid{
+    border: 2px solid red;    
+  }
+  input:valid{
+    border: 2px solid blue;    
+
+  }
+</style>
+
+    <div class="card-body text-center">
+        <h1 class="card-title">Mars Images Browser</h1>
+        <p class="card-text ">Browse NASA Mars images and save your preferred ones.</p>
+        <button id='info' class="btn btn-primary ">whom am i</button>
+      </div>
+
+
+      <div id='daitelsDevloper' class="modal d-none" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title bg-primery text-center">who am i</h5>
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h5>shimoin luria</h5>
+              <p>my email is: shimoinlu@edu.hac.ac.il</p>  
+            </div>
+            <div class="modal-footer">
+              <button id='close' type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+      <div id='formSearch' class="col-12 col-lg-6" tabindex="-1" role="dialog">
+        
+          <h5 class="col" style="background-color:#ADD8E6" >Search for images:</h5>
+          <div class="col modal-body">
+            <label for="date" class="col">Date (MM-DD-YYYY) or Sol</label><br>
+            <input id="date" type="text" class="col"   required pattern="(\d{2}-\d{2}-\d{4})|(\d{5})"><br>
+            <label for="selectRover" >select Rover</label><br>
+            <select name='selectRover' id="mission" required><br>
+              <option selected value="">Select Rover</option>             <option value="Curiosity">Curiosity</option>
+              <option value="Opportunity">Opportunity</option>
+              <option value="Spirit">Spirit</option>
+            </select><br>      
+            <label for="selectCamera" >select Rover</label><br>
+            <select name='selectCamera' id="camera" >
+              <option selected value="">Select Product ID Type</option>
+              <option value="FHAZ">FHAZ</option>
+              <option value="RHAZ">RHAZ</option>
+              <option value="MAST">MAST</option>
+              <option value="CHEMCAM">CHEMCAM</option>
+              <option value="MAHLI">MAHLI</option>
+              <option value="MARDI">MARDI</option>
+              <option value="NAVCAM">NAVCAM</option>
+              <option value="PANCAM">PANCAM</option>
+              <option value="MINITES">MINITES</option>
+            </select><br>      
+            <div class="modal-footer">
+              <button id='search' type="button" class="btn btn-primary" data-dismiss="modal">search</button>
+              <button id='clear' type="button" class="btn btn-light text-primery" data-dismiss="modal">search</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-6" >
+          <h5 class="text-primary" style="background-color:#ADD8E6">Saved Images:</h5><br>
+          <button id='slide' type="button" class="btn btn-primary" data-dismiss="modal">Start Slide Images</button>
+          <button id='StopSlide' type="button" class="btn btn-primary" data-dismiss="modal">Stop Slide Images</button>
+
+        </div>
+      </div>
+      </div>      
+      <div id="gallery1"  class="container d-none">
+
+      </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script>
+
+    class imgMrs{
+      constructor(earthDate,sol,srcImg,camera,missions)
+      {
+        this.earthDate = earthDate
+        this.sol = sol
+        this.srcImg = srcImg
+        this.cmra = camera
+        this.rover = missions 
+      }
+    }
+    var arrImg = []
+    const APIKEY = "HBeasDtXkiao5GabRMuSrD0QZMK3rSmLFgEXLB34"  
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector("#info").addEventListener("click", function(e){
+          let cl_daitles = document.querySelector("#daitelsDevloper")
+          cl_daitles.classList.remove('d-none')
+          cl_daitles.classList.add('d-block')
+        });
+        document.querySelector("#close").addEventListener("click", function(e){
+          let cl_daitles = document.querySelector("#daitelsDevloper")
+          cl_daitles.classList.remove('d-block')
+          cl_daitles.classList.add('d-none')
+        });
+        document.querySelector("#search").addEventListener("click", search);
+
+
+        const date_ = document.getElementById("date");
+        const date1_ = document.getElementById("date");
+        date_.addEventListener("input", function (event){
+          const dateAsString = document.querySelector('#date').value 
+          const DateAsDateType = new Date(dateAsString) 
+          if(isNaN(DateAsDateType.getTime()))
+          { 
+            console.log(document.querySelector('#date').value )
+            date1_.setCustomValidity("date is invalid")
+            date_.reportValidity() 
+          }
+          // else if(date_.validity)
+  
+          // const da = new Date(document.getElementById("date").val)
+          // else if (date_.validity.typeMismatch) {
+          //   date_.setCustomValidity("I am expecting an e-mail address!");
+          // } else {
+          //   date_.setCustomValidity("");
+          // }3
+          });
+    })
+    function buildGalery()
+    {
+      let g = document.querySelector("#gallery1")
+      g.classList.remove('d-none')
+      g.classList.add('d-bolck')
+
+
+        for(var pic of arrImg)
+        {
+        let sol = pic.sol;
+        let date = pic.earthDate      
+        let src =  pic.srcImg //  "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/fcam/FLB_486265257EDR_F0481570FHAZ00323M_.JPG"
+        let camera = pic.cmra
+        let mission = pic.rover
+//        var ng = `<div class "row"></div>`        
+        var nextImg = `<div class = "col"><img src=${src} width=70% hight=70%></img><p>camera is: ${camera}</p><p>earth date is: ${date}</p><p>sol is: ${sol}</p><p>Mission is: ${mission}</p></div>`;      
+        //g.appendChild(newGlry)
+        var t = document.getElementById("gallery1")
+        t.insertAdjacentHTML("beforeend",nextImg);
+      }
+//        document.getElementById('gallery1').innerHTML = document.getElementById('gallery1').innerHTML + ng
+//        g.appendChild(ng)
+
+        // var newGlry = document.createElement('img' ,{is:"img-thumbnail"})
+        // newGlry.src = "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/fcam/FLB_486265257EDR_F0481570FHAZ00323M_.JPG"
+        // newGlry.width = 20
+        // g.appendChild(newGlry)
+     }
+    function search(){
+      const dateOrSol = document.querySelector("#date").value
+      const DateForSearch = new Date(dateOrSol)
+      
+      const camera =  document.querySelector("#camera").value
+      const missions = document.querySelector("#mission").value
+      const urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
+      fetch(urlForImages)
+      .then(status)
+      .then(res => res.json())
+      .then(json => {
+        for(var oneImg of json.photos){      
+          arrImg.push(new imgMrs(oneImg.earth_date,oneImg.sol,oneImg.img_src,oneImg.camera.name,oneImg.rover.name))
+        }
+      })
+      .catch(function(err) {
+        console.log('faild')
+        console.log(err)
+      });
+      buildGalery();      
+      console.log(urlForImages)
+      console.log(camera)
+      console.log(missions)
+
+      // if(dateOrSol.includes("-"))
+    }
+    function status(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response)
+        } else {
+            return Promise.reject(new Error(response.statusText))
+        }
+    }
+
+
+     </script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+  </body>
+</html>
