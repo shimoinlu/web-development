@@ -144,11 +144,14 @@
           // }3
           });
     })
-    function findIdByImgSrc(src){
+    function getElementForList(src){
       for (let i of arrImg)
       {
         if(i.srcImg === src)
-        return i.id
+        {
+          let lnkAndId = 'image id: ' + i.id
+          return `<li><a href=${src} target="_blank">${lnkAndId}</a><br><p></p>Earth date is: ${i.earthDate} Sol is: ${i.sol} Camera is: ${i.cmra}</p> </li>`
+        }
       }
     }
     function buildGalery()
@@ -191,7 +194,15 @@
      function SaveImageToList(event){
       var s = event.target.parentNode.parentNode
       var s1 = s.querySelector('img')
-      console.log('button pressed',  findIdByImgSrc(s1.currentSrc));
+      let earthDate = event.target.parentNode.parentNode.childNodes[1].innerHTML
+      let objForList =  getElementForList(s1.currentSrc)
+      // let id = findIdByImgSrc(s1.currentSrc)
+      // let lnk = 'image id: ' + id
+      // objForList =  `<li><a heref=${s1.currentSrc}>${lnk}</a><br><p>camera is: </p><>`
+      var li = document.getElementById("listOfSavedImages")
+      li.insertAdjacentHTML("beforeend",objForList);
+      console.log(objForList);
+        // console.log('button pressed',  findIdByImgSrc(s1.currentSrc));
       }
     function search(){
       const dateOrSol = document.querySelector("#date").value
