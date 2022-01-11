@@ -169,7 +169,9 @@
         let camera = pic.cmra
         let mission = pic.rover
 //        var ng = `<div class "row"></div>`        
-        var nextImg = `<div class = "col"><img src=${src} width=70% hight=70%></img><p>camera is: ${camera}</p><p>earth date is: ${date}</p><p>sol is: ${sol}</p><p>Mission is: ${mission}</p><div class="text-center"><button type="button" class="btn btn-primary d-inline" data-dismiss="modal">Save</button><button type="button" class="btn btn-primary d-inline" data-dismiss="modal">Open</button></div></div>`;      
+        var nextImg = `<div class = "col"><img src=${src} width=70% hight=70%></img><p>camera is: ${camera}</p><p>earth date is: ${date}</p><p>sol is: ${sol}</p><p>Mission is: ${mission}</p><div class="text-center"><button type="button" class="btn btn-primary d-inline" data-dismiss="modal">Save</button>
+            <a href=${pic.srcImg} class="btn btn-primary" target="_blank">Full size</a>
+            </div></div>`;      
         //g.appendChild(newGlry)
         var t = document.getElementById("gallery1")
         t.insertAdjacentHTML("beforeend",nextImg);
@@ -188,7 +190,8 @@
       const submit = document.querySelectorAll(".btn.btn-primary.d-inline");
 
       submit.forEach((btn) => {
-      btn.addEventListener("click", SaveImageToList);
+        if(btn.innerHTML === "Save" )
+          btn.addEventListener("click", SaveImageToList);
       });
      }
      function SaveImageToList(event){
