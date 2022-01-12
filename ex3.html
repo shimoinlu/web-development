@@ -87,6 +87,25 @@
         </div>
       </div>
       </div>      
+
+      <div id="carouselCaptions" class="carousel slide d-none" data-bs-ride="carousel">
+        <div class="carousel-inner" >
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselCaptions" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselCaptions" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+
+
+
+
+
       <div id="gallery1"  class="container d-none">
 
       </div>
@@ -107,8 +126,21 @@
         this.rover = missions 
       }
     }
+    class imgMrsSlide{
+      constructor(earthDate,srcImg,camera)
+      {
+        this.earthDate = earthDate
+        this.srcImg = srcImg
+        this.cmra = camera
+      }
+    }
+    
     var arrImg = []
+    var arrForList = []
     const APIKEY = "HBeasDtXkiao5GabRMuSrD0QZMK3rSmLFgEXLB34"  
+    var slide = false
+
+
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector("#info").addEventListener("click", function(e){
           let cl_daitles = document.querySelector("#daitelsDevloper")
@@ -121,6 +153,7 @@
           cl_daitles.classList.add('d-none')
         });
         document.querySelector("#search").addEventListener("click", search);
+        document.querySelector("#slide").addEventListener("click", buildAndActiveSlides);
 
 
         const date_ = document.getElementById("date");
@@ -149,11 +182,49 @@
       {
         if(i.srcImg === src)
         {
+          arrForList.push(new imgMrsSlide(i.earthDate,i.srcImg,i.camera))
           let lnkAndId = 'image id: ' + i.id
           return `<li><a href=${src} target="_blank">${lnkAndId}</a><br><p></p>Earth date is: ${i.earthDate} Sol is: ${i.sol} Camera is: ${i.cmra}</p> </li>`
         }
       }
     }
+    function buildAndActiveSlides()
+    {
+      if(!slide)
+        slide = true
+      else
+        return
+      let activeSlides = document.querySelector('#carouselCaptions')
+      activeSlides.classList.remove('d-none')
+      activeSlides.classList.add('d-block')
+
+      let innerCarousel = document.querySelector('.carousel-inner')
+      let firstSlideImage = `<div class="carousel-item active">
+              <img src=${arrForList[0].srcImg} class="d-block w-100">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>${arrForList[0].cmra}</h5>
+                <p>${arrForList[0].earthDate}</p>
+                <a href=${arrForList[0].srcImg} class="btn btn-primary" target="_blank">Full size</a>
+              </div>
+            </div>`
+            console.log('build slides image src is ',arrForList[0].srcImg)
+            innerCarousel.insertAdjacentHTML("beforeend",firstSlideImage);
+
+
+      for(let i = 1; i < arrForList.length; ++i){
+      let newSlideImage = `<div class="carousel-item">
+              <img src=${arrForList[i].srcImg} class="d-block w-100">
+              <div class="carousel-caption d-none d-md-block">
+                <h5>${arrForList[i].cmra}</h5>
+                <p>${arrForList[i].earthDate}</p>
+                <a href=${arrForList[i].srcImg} class="btn btn-primary" target="_blank">Full size</a>
+              </div>
+            </div>`
+            innerCarousel.insertAdjacentHTML("beforeend",newSlideImage);
+    }
+  }
+
+
     function buildGalery()
     {
       let g = document.querySelector("#gallery1")
