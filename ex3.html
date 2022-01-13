@@ -19,6 +19,7 @@
     border: 2px solid blue;    
 
   }
+
 </style>
 
     <div class="card-body text-center">
@@ -53,15 +54,16 @@
           <h5 class="col" style="background-color:#ADD8E6" >Search for images:</h5>
           <div class="col modal-body">
             <label for="date" class="col">Date (MM-DD-YYYY) or Sol</label><br>
-            <input id="date" type="text" class="col"   required pattern="(\d{2}-\d{2}-\d{4})|(\d{5})"><br>
+            <input id="date" type="text" class="col"   required ><br>
             <label for="selectRover" >select Rover</label><br>
-            <select name='selectRover' id="mission" required><br>
-              <option selected value="">Select Rover</option>             <option value="Curiosity">Curiosity</option>
+            <select name='selectRover' id="mission"  class="required"><br>
+              <option selected value="">Select Rover</option>
+              <option value="Curiosity">Curiosity</option>
               <option value="Opportunity">Opportunity</option>
               <option value="Spirit">Spirit</option>
             </select><br>      
             <label for="selectCamera" >select Rover</label><br>
-            <select name='selectCamera' id="camera" >
+            <select name='selectCamera' id="camera" class="required">
               <option selected value="">Select Product ID Type</option>
               <option value="FHAZ">FHAZ</option>
               <option value="RHAZ">RHAZ</option>
@@ -84,22 +86,22 @@
           <button id='slide' type="button" class="btn btn-primary" data-dismiss="modal">Start Slide Images</button>
           <button id='StopSlide' type="button" class="btn btn-primary" data-dismiss="modal">Stop Slide Images</button>
           <ol id='listOfSavedImages'></ol>    
-        </div>
+          <div id="carouselCaptions" class="carousel slide d-none" data-bs-ride="carousel">
+            <div class="carousel-inner" >
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselCaptions" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselCaptions" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+            </div>
       </div>
       </div>      
 
-      <div id="carouselCaptions" class="carousel slide d-none" data-bs-ride="carousel">
-        <div class="carousel-inner" >
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselCaptions" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselCaptions" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
 
 
 
@@ -156,26 +158,19 @@
         document.querySelector("#slide").addEventListener("click", buildAndActiveSlides);
 
 
-        const date_ = document.getElementById("date");
-        const date1_ = document.getElementById("date");
-        date_.addEventListener("input", function (event){
-          const dateAsString = document.querySelector('#date').value 
-          const DateAsDateType = new Date(dateAsString) 
-          if(isNaN(DateAsDateType.getTime()))
-          { 
-            console.log(document.querySelector('#date').value )
-            date1_.setCustomValidity("date is invalid")
-            date_.reportValidity() 
-          }
-          // else if(date_.validity)
-  
-          // const da = new Date(document.getElementById("date").val)
-          // else if (date_.validity.typeMismatch) {
-          //   date_.setCustomValidity("I am expecting an e-mail address!");
-          // } else {
-          //   date_.setCustomValidity("");
-          // }3
-          });
+        // const date_ = document.getElementById("date");
+        // const date1_ = document.getElementById("date");
+        // date_.addEventListener("input", function (event){
+        //   const dateAsString = document.querySelector('#date').value 
+        //   const DateAsDateType = new Date(dateAsString) 
+        //   if(isNaN(DateAsDateType.getTime()))
+        //   { 
+        //     console.log(document.querySelector('#date').value )
+        //     date1_.setCustomValidity("date is invalid")
+        //     date1_.reportValidity() 
+        //   }
+
+        //   });
     })
     function getElementForList(src){
       for (let i of arrImg)
@@ -278,13 +273,65 @@
       console.log(objForList);
         // console.log('button pressed',  findIdByImgSrc(s1.currentSrc));
       }
+
+
+    function validInputs(date)
+    {
+          let resultValidation = true
+          const camera =  document.querySelector("#camera").value
+          const missions = document.querySelector("#mission").value
+          console.log('asas',camera.length,'dfdf')
+
+
+          let pattern = /(\d{2}-\d{2}-\d{4})|(\d{4})/;
+
+
+          const date1_ = document.getElementById("date");
+          const dateAsString = document.querySelector('#date').value 
+
+          const DateAsDateType = new Date(dateAsString) 
+          if(! pattern.test(date))
+          {
+            date1_.setCustomValidity("format not match")
+            date1_.reportValidity() 
+            resultValidation = false
+          }
+          if(isNaN(DateAsDateType.getTime()) && dateAsString.indexOf('-') > -1)
+          { 
+            console.log(document.querySelector('#date').value )
+            date1_.setCustomValidity("date is invalid")
+            date1_.reportValidity() 
+            resultValidation = false
+          }
+          if(!camera.length){
+            document.getElementById("camera").setCustomValidity("must select camera")
+            document.getElementById("camera").reportValidity()
+            resultValidation = false
+          }
+          if(!missions.length){
+            document.getElementById("mission").setCustomValidity("must select missions")
+            document.getElementById("mission").reportValidity()
+            resultValidation = false
+          }
+          return resultValidation
+
+    }  
     function search(){
+      if (!validInputs(document.querySelector("#date").value))
+          return
+
       const dateOrSol = document.querySelector("#date").value
       const DateForSearch = new Date(dateOrSol)
       
       const camera =  document.querySelector("#camera").value
       const missions = document.querySelector("#mission").value
-      const urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
+      let urlForImages 
+      if(dateOrSol.indexOf('-') > -1)
+        urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
+      else
+      urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?sol="+dateOrSol+"&camera="+camera+ "&api_key="+APIKEY
+ 
+ 
       fetch(urlForImages)
       .then(status)
       .then(res => res.json())
