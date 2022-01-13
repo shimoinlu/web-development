@@ -319,19 +319,12 @@
     function search(){
       if (!validInputs(document.querySelector("#date").value))
           return
-
       const dateOrSol = document.querySelector("#date").value
       const DateForSearch = new Date(dateOrSol)
       
       const camera =  document.querySelector("#camera").value
       const missions = document.querySelector("#mission").value
-      let urlForImages 
-      if(dateOrSol.indexOf('-') > -1)
-        urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
-      else
-      urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?sol="+dateOrSol+"&camera="+camera+ "&api_key="+APIKEY
- 
- 
+      const urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
       fetch(urlForImages)
       .then(status)
       .then(res => res.json())
