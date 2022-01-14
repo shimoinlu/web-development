@@ -319,6 +319,7 @@
     function search(){
       if (!validInputs(document.querySelector("#date").value))
           return
+      arrImg=[]
       const dateOrSol = document.querySelector("#date").value
       const DateForSearch = new Date(dateOrSol)
       
@@ -332,12 +333,12 @@
         for(var oneImg of json.photos){      
           arrImg.push(new imgMrs(oneImg.id, oneImg.earth_date,oneImg.sol,oneImg.img_src,oneImg.camera.name,oneImg.rover.name))
         }
+        buildGalery();      
       })
       .catch(function(err) {
         console.log('faild')
         console.log(err)
       });
-      buildGalery();      
       console.log(urlForImages)
       console.log(camera)
       console.log(missions)
