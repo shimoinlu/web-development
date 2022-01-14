@@ -107,9 +107,8 @@
 
 
 
-
+      <img id='loadImg' src="loadingAnimation.gif" class='d-none'> 
       <div id="gallery1"  class="container d-none">
-
       </div>
 
     <!-- Optional JavaScript; choose one of the two! -->
@@ -314,6 +313,9 @@
     function search(){
         if (!validInputs(document.querySelector("#date").value))
             return
+        let loadImage = document.querySelector('#loadImg')
+        loadImage.classList.remove('d-none')
+        loadImage.classList.add('d-block')
 
         arrImg = []
         removeAllChildNodes(document.querySelector("#gallery1"))    
@@ -338,6 +340,8 @@
             arrImg.push(new imgMrs(oneImg.id, oneImg.earth_date,oneImg.sol,oneImg.img_src,oneImg.camera.name,oneImg.rover.name))
           }
           buildGalery();      
+          loadImage.classList.remove('d-block')
+          loadImage.classList.add('d-none')
 
         })
         .catch(function(err) {
