@@ -77,7 +77,7 @@
             </select><br>      
             <div class="modal-footer">
               <button id='search' type="button" class="btn btn-primary" data-dismiss="modal">search</button>
-              <button id='clear' type="button" class="btn btn-light text-primery" data-dismiss="modal">search</button>
+              <button id='clear' type="button" class="btn btn-light text-primery" data-dismiss="modal">clear</button>
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@
           <button id='StopSlide' type="button" class="btn btn-primary" data-dismiss="modal">Stop Slide Images</button>
           <ol id='listOfSavedImages'></ol>    
           <div id="carouselCaptions" class="carousel slide d-none" data-bs-ride="carousel">
-            <div class="carousel-inner" >
+            <div id='crsl'  class="carousel-inner" >
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselCaptions" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -156,21 +156,8 @@
         });
         document.querySelector("#search").addEventListener("click", search);
         document.querySelector("#slide").addEventListener("click", buildAndActiveSlides);
-
-
-        // const date_ = document.getElementById("date");
-        // const date1_ = document.getElementById("date");
-        // date_.addEventListener("input", function (event){
-        //   const dateAsString = document.querySelector('#date').value 
-        //   const DateAsDateType = new Date(dateAsString) 
-        //   if(isNaN(DateAsDateType.getTime()))
-        //   { 
-        //     console.log(document.querySelector('#date').value )
-        //     date1_.setCustomValidity("date is invalid")
-        //     date1_.reportValidity() 
-        //   }
-
-        //   });
+        document.querySelector("#clear").addEventListener("click", ClearSearch);
+                
     })
     function getElementForList(src){
       for (let i of arrImg)
@@ -183,6 +170,23 @@
         }
       }
     }
+    function ClearSearch()
+    {
+      arrImg = []
+      arrForList = []
+      removeAllChildNodes(document.querySelector('#gallery1'))
+      removeAllChildNodes(document.querySelector('#gallery1'))
+      removeAllChildNodes(document.querySelector('#listOfSavedImages'))
+      removeAllChildNodes(document.querySelector('#crsl'))
+     let tmp =  document.getElementById("carouselCaptions")
+     tmp.classList.remove('d-block')
+     tmp.classList.add('d-none')
+     tmp = document.getElementById("gallery1")
+     tmp.classList.remove('d-block')
+     tmp.classList.add('d-none')
+     slide = false
+    }
+
     function buildAndActiveSlides()
     {
       if(!slide)
@@ -231,25 +235,17 @@
         {
         let sol = pic.sol;
         let date = pic.earthDate      
-        let src =  pic.srcImg //  "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/fcam/FLB_486265257EDR_F0481570FHAZ00323M_.JPG"
+        let src =  pic.srcImg
         let camera = pic.cmra
         let mission = pic.rover
-//        var ng = `<div class "row"></div>`        
+
         var nextImg = `<div class = "col"><img src=${src} width=70% hight=70%></img><p>camera is: ${camera}</p><p>earth date is: ${date}</p><p>sol is: ${sol}</p><p>Mission is: ${mission}</p><div class="text-center"><button type="button" class="btn btn-primary d-inline" data-dismiss="modal">Save</button>
             <a href=${pic.srcImg} class="btn btn-primary" target="_blank">Full size</a>
             </div></div>`;      
-        //g.appendChild(newGlry)
         var t = document.getElementById("gallery1")
         t.insertAdjacentHTML("beforeend",nextImg);
         defineSaveClick()
       }
-//        document.getElementById('gallery1').innerHTML = document.getElementById('gallery1').innerHTML + ng
-//        g.appendChild(ng)
-
-        // var newGlry = document.createElement('img' ,{is:"img-thumbnail"})
-        // newGlry.src = "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/fcam/FLB_486265257EDR_F0481570FHAZ00323M_.JPG"
-        // newGlry.width = 20
-        // g.appendChild(newGlry)
      }
      function defineSaveClick() 
      {
@@ -265,13 +261,10 @@
       var s1 = s.querySelector('img')
       let earthDate = event.target.parentNode.parentNode.childNodes[1].innerHTML
       let objForList =  getElementForList(s1.currentSrc)
-      // let id = findIdByImgSrc(s1.currentSrc)
-      // let lnk = 'image id: ' + id
-      // objForList =  `<li><a heref=${s1.currentSrc}>${lnk}</a><br><p>camera is: </p><>`
+
       var li = document.getElementById("listOfSavedImages")
       li.insertAdjacentHTML("beforeend",objForList);
       console.log(objForList);
-        // console.log('button pressed',  findIdByImgSrc(s1.currentSrc));
       }
 
 
@@ -280,17 +273,12 @@
           let resultValidation = true
           const camera =  document.querySelector("#camera").value
           const missions = document.querySelector("#mission").value
-          console.log('asas',camera.length,'dfdf')
-
-
-          let pattern = /(\d{2}-\d{2}-\d{4})|(\d{4})/;
-
 
           const date1_ = document.getElementById("date");
           const dateAsString = document.querySelector('#date').value 
 
           const DateAsDateType = new Date(dateAsString) 
-          if(! pattern.test(date))
+          if(! (/^\d{4}$/.test(date)|| /^\d{2}([./-])\d{2}\1\d{4}$/.test(date)))
           {
             date1_.setCustomValidity("format not match")
             date1_.reportValidity() 
@@ -313,38 +301,57 @@
             document.getElementById("mission").reportValidity()
             resultValidation = false
           }
+          let r = 0
           return resultValidation
 
-    }  
-    function search(){
-      if (!validInputs(document.querySelector("#date").value))
-          return
-      arrImg=[]
-      const dateOrSol = document.querySelector("#date").value
-      const DateForSearch = new Date(dateOrSol)
-      
-      const camera =  document.querySelector("#camera").value
-      const missions = document.querySelector("#mission").value
-      const urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
-      fetch(urlForImages)
-      .then(status)
-      .then(res => res.json())
-      .then(json => {
-        for(var oneImg of json.photos){      
-          arrImg.push(new imgMrs(oneImg.id, oneImg.earth_date,oneImg.sol,oneImg.img_src,oneImg.camera.name,oneImg.rover.name))
-        }
-        buildGalery();      
-      })
-      .catch(function(err) {
-        console.log('faild')
-        console.log(err)
-      });
-      console.log(urlForImages)
-      console.log(camera)
-      console.log(missions)
-
-      // if(dateOrSol.includes("-"))
     }
+    function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+
+  }    
+    function search(){
+        if (!validInputs(document.querySelector("#date").value))
+            return
+
+        arrImg = []
+        removeAllChildNodes(document.querySelector("#gallery1"))    
+        const dateOrSol = document.querySelector("#date").value
+        const DateForSearch = new Date(dateOrSol)
+        
+        const camera =  document.querySelector("#camera").value
+        const missions = document.querySelector("#mission").value
+        let urlForImages 
+        if(dateOrSol.indexOf('-') > -1)
+          urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?earth_date="+DateForSearch.getFullYear()+"-"+(DateForSearch.getMonth()+1)+"-"+(DateForSearch.getUTCDate()+1)+"&camera="+camera+ "&api_key="+APIKEY
+        else
+        urlForImages = "https://api.nasa.gov/mars-photos/api/v1/rovers/"+missions+"/photos?sol="+dateOrSol+"&camera="+camera+ "&api_key="+APIKEY
+  //      arrImg = []
+  
+  
+        fetch(urlForImages)
+        .then(status)
+        .then(res => res.json())
+        .then(json => {
+          for(var oneImg of json.photos){      
+            arrImg.push(new imgMrs(oneImg.id, oneImg.earth_date,oneImg.sol,oneImg.img_src,oneImg.camera.name,oneImg.rover.name))
+          }
+          buildGalery();      
+
+        })
+        .catch(function(err) {
+          console.log('faild')
+          console.log(err)
+        });
+        let gal = document.querySelector("#gallery1")
+  //      removeAllChildNodes(gal)
+        console.log(urlForImages)
+        console.log(camera)
+        console.log(missions)
+
+        // if(dateOrSol.includes("-"))
+      }
     function status(response) {
         if (response.status >= 200 && response.status < 300) {
             return Promise.resolve(response)
