@@ -140,7 +140,7 @@
     var arrForList = []
     const APIKEY = "HBeasDtXkiao5GabRMuSrD0QZMK3rSmLFgEXLB34"  
     var slide = false
-
+    var stopRunSlide = true
 
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelector("#info").addEventListener("click", function(e){
@@ -156,6 +156,7 @@
         document.querySelector("#search").addEventListener("click", search);
         document.querySelector("#slide").addEventListener("click", buildAndActiveSlides);
         document.querySelector("#clear").addEventListener("click", ClearSearch);
+        document.querySelector("#StopSlide").addEventListener("click", StopSlide);
                 
     })
     function getElementForList(src){
@@ -168,6 +169,13 @@
           return `<li><a href=${src} target="_blank">${lnkAndId}</a><br><p></p>Earth date is: ${i.earthDate} Sol is: ${i.sol} Camera is: ${i.cmra}</p> </li>`
         }
       }
+    }
+    function StopSlide()
+    {
+      let stopSlides = document.querySelector('#carouselCaptions')
+      stopSlides.classList.remove('d-block')
+      stopSlides.classList.add('d-none')
+      stopRunSlide = false
     }
     function ClearSearch()
     {
@@ -190,7 +198,9 @@
     {
       if(!slide)
         slide = true
-      else
+      else if(!stopRunSlide)
+        stopRunSlide = true
+      else  
         return
       let activeSlides = document.querySelector('#carouselCaptions')
       activeSlides.classList.remove('d-none')
